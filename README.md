@@ -20,6 +20,6 @@ Use the loader as you would any other one, specify the test files and options:
 ```
 
 ### Options
-- baseDir - Your absolute source root directory (e.g. `/path/to/src`)
-- publicDir - The output dir to save the file to (e.g. `build/static/media`)
+- **baseDir** *(optional)* - Your absolute source root directory (e.g. `/path/to/src`). Defaults to current working directory.
+- **publicDir** - The output dir to save the file to (e.g. `build/static/media`)
 

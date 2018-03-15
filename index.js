@@ -32,9 +32,8 @@ module.exports = function chromeUrlLoader(contents) {
   const options = loaderUtils.getOptions(this) || {}
   validateOptions(schema, options, 'Chrome URL Loader')
 
-  options.baseDir = options.baseDir || ''
+  options.baseDir = options.baseDir || process.cwd()
   options.baseDir = options.baseDir.endsWith('/') ? options.baseDir.slice(0, -1) : options.baseDir
-  options.publicDir = options.publicDir || ''
   options.publicDir = options.publicDir.endsWith('/') ? options.publicDir.slice(0, -1) : options.publicDir
 
   const relativeFilePath = this.resourcePath.replace(options.baseDir + '/', '')
