@@ -34,6 +34,7 @@ module.exports = function chromeUrlLoader(contents) {
 
   options.baseDir = options.baseDir || process.cwd()
   options.baseDir = options.baseDir.endsWith('/') ? options.baseDir.slice(0, -1) : options.baseDir
+  options.publicDir = options.publicDir || ''
   options.publicDir = options.publicDir.endsWith('/') ? options.publicDir.slice(0, -1) : options.publicDir
 
   const relativeFilePath = this.resourcePath.replace(options.baseDir + '/', '')
@@ -43,7 +44,7 @@ module.exports = function chromeUrlLoader(contents) {
   }
 
   const fileName = path.basename(relativeFilePath)
-  const outputDir = path.join(this.options.context, options.publicDir)
+  const outputDir = path.join(this.context, options.publicDir)
   const outputPath = path.join(outputDir, fileName)
   const relativeDir = options.publicDir.split(path.sep).slice(1).join(path.sep)
 
