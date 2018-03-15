@@ -1,0 +1,14 @@
+{
+  "name": "chrome-url-loader",
+  "version": "1.0.0",
+  "description": "chrome extension URL loader for webpack",
+  "main": "index.js",
+  "repository": "https://github.com/chenasraf/chrome-url-loader.git",
+  "author": "Chen Asraf <chen@asraf.me>",
+  "license": "Apache-2.0",
+  "private": false,
+  "dependencies": {
+    "loader-utils": "^1.1.0",
+    "schema-utils": "^0.4.5"
+  }
+}
