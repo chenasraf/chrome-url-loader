@@ -1,25 +1,24 @@
-'use strict'
+"use strict"
 
-const loaderUtils = require('loader-utils')
-const validateOptions = require('schema-utils')
-const fs = require('fs')
-const path = require('path')
+const { validate } = require("schema-utils")
+const fs = require("fs")
+const path = require("path")
 
 const schema = {
-  type: 'object',
+  type: "object",
   properties: {
     publicDir: {
-      type: 'string'
+      type: "string",
     },
     baseDir: {
-      type: 'string'
-    }
-  }
+      type: "string",
+    },
+  },
 }
 
 function mkDirP(dir) {
   this.addDependency(dir)
-  const baseDir = '/'
+  const baseDir = "/"
   dir.split(path.sep).reduce((parent, child) => {
     const full = path.resolve(baseDir, parent, child)
     if (!fs.existsSync(full)) {
@@ -30,16 +29,21 @@ function mkDirP(dir) {
 }
 
 module.exports = function chromeUrlLoader(contents) {
-  const options = loaderUtils.getOptions(this) || {}
+  const options = this.getOptions() || {}
   const callback = this.async()
-  validateOptions(schema, options, 'Chrome URL Loader')
+  validate(schema, options, {
+    name: "Chrome URL Loader",
+    baseDataPath: "options",
+  })
 
   options.baseDir = options.baseDir || process.cwd()
-  options.baseDir = options.baseDir.endsWith('/') ? options.baseDir.slice(0, -1) : options.baseDir
-  options.publicDir = options.publicDir || ''
-  options.publicDir = options.publicDir.endsWith('/') ? options.publicDir.slice(0, -1) : options.publicDir
+  options.baseDir = options.baseDir.endsWith("/") ? options.baseDir.slice(0, -1) : options.baseDir
+  options.publicDir = options.publicDir || ""
+  options.publicDir = options.publicDir.endsWith("/")
+    ? options.publicDir.slice(0, -1)
+    : options.publicDir
 
-  const relativeFilePath = this.resourcePath.replace(options.baseDir + '/', '')
+  const relativeFilePath = this.resourcePath.replace(options.baseDir + "/", "")
 
   if (relativeFilePath === this.resourcePath) {
     callback(null, `module.exports = '${this.resourcePath}'`)
@@ -55,8 +59,11 @@ module.exports = function chromeUrlLoader(contents) {
 
   this.addDependency(outputDir)
   this.addDependency(outputPath)
-  fs.writeFile(outputPath, contents)
 
-  callback(null, `module.exports = chrome.extension.getURL('${relativeDir}/${fileName}')`)
-  return
+  fs.writeFile(outputPath, contents, (err) => {
+    if (err) {
+      return callback(err)
+    }
+    callback(null, `module.exports = chrome.extension.getURL('${relativeDir}/${fileName}')`)
+  })
 }

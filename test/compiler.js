@@ -1,6 +1,6 @@
-const path = require('path')
-const webpack = require('webpack')
-const memoryfs = require('memory-fs')
+const path = require("path")
+const webpack = require("webpack")
+const { createFsFromVolume, Volume } = require("memfs")
 
 module.exports = (fixture, options = {}) => {
   const compiler = webpack({
@@ -8,26 +8,30 @@ module.exports = (fixture, options = {}) => {
     entry: `./${fixture}`,
     output: {
       path: path.resolve(__dirname),
-      filename: 'bundle.js',
+      filename: "bundle.js",
     },
     module: {
-      rules: [{
-        test: /\.svg$/,
-        use: {
-          loader: path.resolve(__dirname, '../index.js'),
-          options: {
-            publicDir: 'build/static/svg'
-          }
-        }
-      }]
+      rules: [
+        {
+          test: /\.svg$/,
+          use: {
+            loader: path.resolve(__dirname, "../index.js"),
+            options: {
+              publicDir: "build/static/svg",
+            },
+          },
+        },
+      ],
     },
   })
 
-  compiler.outputFileSystem = new memoryfs()
+  compiler.outputFileSystem = createFsFromVolume(new Volume())
+  compiler.outputFileSystem.join = path.join.bind(path)
 
   return new Promise((resolve, reject) => {
     compiler.run((err, stats) => {
       if (err) reject(err)
+      if (stats.hasErrors()) reject(stats.toJson().errors)
 
       resolve(stats)
     })

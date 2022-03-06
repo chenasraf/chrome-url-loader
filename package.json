@@ -8,18 +8,17 @@
   "license": "Apache-2.0",
   "private": false,
   "dependencies": {
-    "loader-utils": "^1.1.0",
-    "schema-utils": "^0.4.5"
+    "schema-utils": "^4.0.0"
   },
   "scripts": {
     "test": "jest"
   },
   "devDependencies": {
-    "babel-jest": "^23.0.0-alpha.0",
-    "babel-preset-env": "^1.6.1",
-    "jest": "^23.0.0-alpha.0",
-    "memory-fs": "^0.4.1",
-    "webpack": "^4.1.1"
+    "@babel/preset-env": "^7.16.11",
+    "babel-jest": "^27.5.1",
+    "jest": "^27.5.1",
+    "memfs": "^3.4.1",
+    "webpack": "^5.70.0"
   },
   "jest": {
     "testEnvironment": "node"
