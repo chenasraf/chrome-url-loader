@@ -59,3 +59,4 @@ typings/
 
 # test results
 /build
+.DS_Store
