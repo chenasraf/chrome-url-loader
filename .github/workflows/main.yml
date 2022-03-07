@@ -14,7 +14,7 @@ jobs:
           node-version: "12.x"
       - run: yarn install --frozen-lockfile
       - run: yarn test
-      - run: cd ./dist && yarn pack --filename=../package.tgz
+      - run: mkdir ./dist && cd ./dist && yarn pack --filename=../package.tgz
         if: "!contains(github.event.head_commit.message, '[skip publish]')"
       - uses: Klemensas/action-autotag@stable
         if: "!contains(github.event.head_commit.message, '[skip publish]')"
