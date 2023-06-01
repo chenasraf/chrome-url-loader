@@ -20,7 +20,7 @@ const schema = {
 }
 
 function mkDirP(dir) {
-  this.addDependency(dir)
+  // this.addDependency(dir)
   const baseDir = "/"
   dir.split(path.sep).reduce((parent, child) => {
     const full = path.resolve(baseDir, parent, child)
