@@ -64,6 +64,6 @@ module.exports = function chromeUrlLoader(contents) {
     if (err) {
       return callback(err)
     }
-    callback(null, `module.exports = chrome.extension.getURL('${relativeDir}/${fileName}')`)
+    callback(null, `module.exports = chrome.runtime.getURL('${relativeDir}/${fileName}')`)
   })
 }
