@@ -13,6 +13,9 @@ const schema = {
     baseDir: {
       type: "string",
     },
+    baseOutputDir: {
+      type: "string",
+    },
   },
 }
 
@@ -38,13 +41,14 @@ module.exports = function chromeUrlLoader(contents) {
 
   options.baseDir = options.baseDir || process.cwd()
   options.baseDir = options.baseDir.endsWith("/") ? options.baseDir.slice(0, -1) : options.baseDir
+  options.baseOutputDir = options.baseOutputDir || process.cwd()
+  options.baseOutputDir = options.baseOutputDir.endsWith("/") ? options.baseOutputDir.slice(0, -1) : options.baseOutputDir
   options.publicDir = options.publicDir || ""
   options.publicDir = options.publicDir.endsWith("/")
     ? options.publicDir.slice(0, -1)
     : options.publicDir
 
   const relativeFilePath = this.resourcePath.replace(options.baseDir + "/", "")
-
   if (relativeFilePath === this.resourcePath) {
     callback(null, `module.exports = '${this.resourcePath}'`)
     return
@@ -52,13 +56,10 @@ module.exports = function chromeUrlLoader(contents) {
 
   const fileName = path.basename(relativeFilePath)
   const relativeDir = options.publicDir.split(path.sep).slice(1).join(path.sep)
-  const outputPath = path.join(options.baseDir, options.publicDir, fileName)
+  const outputPath = path.join(options.baseOutputDir, options.publicDir, fileName)
   const outputDir = path.dirname(outputPath)
 
   mkDirP.call(this, outputDir)
-
-  this.addDependency(outputDir)
-  this.addDependency(outputPath)
 
   fs.writeFile(outputPath, contents, (err) => {
     if (err) {
@@ -67,3 +68,5 @@ module.exports = function chromeUrlLoader(contents) {
     callback(null, `module.exports = chrome.runtime.getURL('${relativeDir}/${fileName}')`)
   })
 }
+
+module.exports.raw = true;
