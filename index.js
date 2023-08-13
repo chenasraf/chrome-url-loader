@@ -16,18 +16,6 @@ const schema = {
   },
 }
 
-function mkDirP(dir) {
-  this.addDependency(dir)
-  const baseDir = "/"
-  dir.split(path.sep).reduce((parent, child) => {
-    const full = path.resolve(baseDir, parent, child)
-    if (!fs.existsSync(full)) {
-      fs.mkdirSync(full)
-    }
-    return full
-  })
-}
-
 module.exports = function chromeUrlLoader(contents) {
   const options = this.getOptions() || {}
   const callback = this.async()
@@ -44,7 +32,6 @@ module.exports = function chromeUrlLoader(contents) {
     : options.publicDir
 
   const relativeFilePath = this.resourcePath.replace(options.baseDir + "/", "")
-
   if (relativeFilePath === this.resourcePath) {
     callback(null, `module.exports = '${this.resourcePath}'`)
     return
@@ -52,18 +39,11 @@ module.exports = function chromeUrlLoader(contents) {
 
   const fileName = path.basename(relativeFilePath)
   const relativeDir = options.publicDir.split(path.sep).slice(1).join(path.sep)
-  const outputPath = path.join(options.baseDir, options.publicDir, fileName)
+  const outputPath = path.join(options.publicDir, fileName)
   const outputDir = path.dirname(outputPath)
 
-  mkDirP.call(this, outputDir)
-
-  this.addDependency(outputDir)
-  this.addDependency(outputPath)
-
-  fs.writeFile(outputPath, contents, (err) => {
-    if (err) {
-      return callback(err)
-    }
-    callback(null, `module.exports = chrome.extension.getURL('${relativeDir}/${fileName}')`)
-  })
+  this.emitFile(outputPath, contents, null)
+  callback(null, `module.exports = chrome.runtime.getURL('${relativeDir}/${fileName}')`)
 }
+
+module.exports.raw = true;
